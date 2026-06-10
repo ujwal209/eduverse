@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Send, Loader2, Sparkles, Plus, MessageSquare, Menu, X, BrainCircuit, BookOpen, Paperclip, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -25,7 +25,7 @@ const TEMPLATES = [
   { icon: MessageSquare, title: "Generate questions", prompt: "Generate 3 multiple-choice practice questions about the French Revolution." },
 ];
 
-export default function ChatPage() {
+function ChatContent() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -462,5 +462,20 @@ export default function ChatPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex h-[calc(100vh-3.5rem)] items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-2">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">Loading chat...</p>
+        </div>
+      </div>
+    }>
+      <ChatContent />
+    </Suspense>
   )
 }
